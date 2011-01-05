@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <script type="text/javascript" src="../lib/svgweb/src/svg-uncompressed.js" data-path="../lib/svgweb/src"></script>
+    <script type="text/javascript" src="../lib/polymaps.js"></script>
+		<meta name="svg.render.forceflash" content="true"/>
+		<meta name="svg.render.flashdebug" content="true"/>
+    <style type="text/css">
+
+    </style>
+  </head>
+  <body>
+		<div id="container">
+			<script type="image/svg+xml">
+				<svg width="950" height="500" id="map">
+				</svg>
+			</script>
+			<script type="text/javascript">
+				window.onsvgload = function() {
+					var po = org.polymaps;
+
+					var container = document.getElementById("map");
+					console.log(container);
+
+					var box = container.appendChild(po.svg("rect"));
+					box.setAttribute("width", 200);
+					box.setAttribute("height", 32);
+					box.setAttribute("fill", "#f00");
+
+					var map = po.map()
+							.container(container);
+
+					var tiles = po.image()
+							.url(po.url("http://{S}tile.cloudmade.com"
+							+ "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+							+ "/998/256/{Z}/{X}/{Y}.png")
+							.hosts(["a.", "b.", "c.", ""]));
+
+					console.log("adding tiles...");
+					map.add(tiles);
+					console.log("tiles added, container: " + tiles.container());
+					
+					map.center({lat: 37.7749295, lon: -122.4194155}).zoom(11);
+
+					/*
+					map.add(po.interact());
+					map.add(po.hash());
+					*/
+
+				};
+
+			</script>
+			<span id="copy">
+				&copy; 2010
+				<a href="http://www.cloudmade.com/">CloudMade</a>,
+				<a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors,
+				<a href="http://creativecommons.org/licenses/by-sa/2.0/">CCBYSA</a>.
+			</span>
+		</div>
+	</body>
+</html>
