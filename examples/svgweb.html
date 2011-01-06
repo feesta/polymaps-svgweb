@@ -2,7 +2,8 @@
   <head>
     <script type="text/javascript" src="../lib/svgweb/src/svg-uncompressed.js" data-path="../lib/svgweb/src"></script>
     <script type="text/javascript" src="../lib/polymaps.js"></script>
-		<meta name="svg.render.forceflash" content="true"/>
+    <script type="text/javascript" src="mission.js"></script>
+		<meta name="svg.render.forceflash" content="false"/>
 		<meta name="svg.render.flashdebug" content="true"/>
     <style type="text/css">
 
@@ -15,10 +16,10 @@
 				</svg>
 			</script>
 			<script type="text/javascript">
+				var po = org.polymaps,
+						map, container, tiles;
 				window.onsvgload = function() {
-					var po = org.polymaps;
-
-					var container = document.getElementById("map");
+					container = document.getElementById("map");
 					console.log(container);
 
 					var box = container.appendChild(po.svg("rect"));
@@ -26,25 +27,30 @@
 					box.setAttribute("height", 32);
 					box.setAttribute("fill", "#f00");
 
-					var map = po.map()
-							.container(container);
+					map = po.map()
+						.container(container);
 
-					var tiles = po.image()
-							.url(po.url("http://{S}tile.cloudmade.com"
-							+ "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
-							+ "/998/256/{Z}/{X}/{Y}.png")
-							.hosts(["a.", "b.", "c.", ""]));
+					// FIXME: setting size manually does the thing, but getBBox() isn't
+					// properly implemented for the <svg> node
+					map.size({x: parseInt(container.getAttribute("width")), y: parseInt(container.getAttribute("height"))});
+					map.center({lat: 37.7749295, lon: -122.4194155}).zoom(12);
 
-					console.log("adding tiles...");
+					tiles = po.image()
+						.url(po.url("http://{S}tile.cloudmade.com"
+						+ "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+						+ "/998/256/{Z}/{X}/{Y}.png")
+						.hosts(["a.", "b.", "c.", ""]));
 					map.add(tiles);
-					console.log("tiles added, container: " + tiles.container());
-					
-					map.center({lat: 37.7749295, lon: -122.4194155}).zoom(11);
 
-					/*
+					var poly = po.geoJson()
+						.on("load", po.stylist()
+								.attr("fill", "#f0f")
+								.attr("fill-opacity", .5))
+						.features([mission]);
+					map.add(poly);
+
 					map.add(po.interact());
-					map.add(po.hash());
-					*/
+					// map.add(po.hash());
 
 				};
 
